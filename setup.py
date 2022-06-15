@@ -6,7 +6,7 @@ with open(os.path.join(os.path.dirname(__file__), "README.md")) as readme:
 
 setup(
     name="hiddenlayer-python",
-    version="0.0.1",
+    version="0.0.2",
     packages=find_packages(),
     include_package_data=True,
     description="HiddenLayer",
@@ -15,9 +15,7 @@ setup(
     url="https://www.github.com/hiddenlayersec/hiddenlayer-python",
     author="HiddenLayer",
     author_email="contact@hiddenlayer.com",
-    install_requires=[
-        "requests"
-    ],
+    install_requires=["requests", "numpy", ""],
     classifiers=[
         "Intended Audience :: Developers",
         "Operating System :: OS Independent",

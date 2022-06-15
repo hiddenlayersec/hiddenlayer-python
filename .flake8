@@ -1,0 +1,7 @@
+[flake8]
+ignore = E203,E221,E241,E265,E201,E202,E402,C901,E251,E126,B301,H106,H238,H304,H306,H101,H404,H405,H301,H401,H501,D100,D101,W503
+max-line-length = 160
+exclude = tests/*
+max-complexity = 10
+builtins = long,unicode,xrange
+import-order-style = pep8
