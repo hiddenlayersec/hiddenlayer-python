@@ -11,7 +11,7 @@ from hiddenlayer.config import config
 
 
 class HiddenLayerClient(object):
-    def __init__(self, token: str = None, api_host: str = None, version: int = None):
+    def __init__(self, token: str = None, api_host: str = None, version: int = None, proto: str = None):
         """HiddenLayer API Client
 
         :param token: api token for auth
@@ -23,7 +23,8 @@ class HiddenLayerClient(object):
         self.version = version or config.api_version() or 1
         self.token = token or config.api_token()
         self.api_host = api_host or config.api_host() or "api.hiddenlayer.com"
-        self.api_url = f"https://{self.api_host}/caml/api/v{self.version}"
+        self.proto = proto or config.api_proto() or "https"
+        self.api_url = f"{self.proto}://{self.api_host}/caml/api/v{self.version}"
 
         if self.token is None:
             raise AttributeError("API token must be set via HL_API_TOKEN environment variable or passed to the client.")
@@ -63,8 +64,9 @@ class HiddenLayerClient(object):
     def get_events(
         self,
         page: int = 0,
+        sensor_id: str = None,
         requester_id: str = None,
-        event_id: str = None,
+        group_id: str = None,
         event_start_time: str = None,
         event_stop_time: str = None,
         max_results: int = 1000,
@@ -72,18 +74,21 @@ class HiddenLayerClient(object):
         """Get list of events
 
         :param page: page number
+        :param sensor_id: filter by sensor_id
         :param requester_id: filter by requester_id
-        :param event_id: filter by event_id
+        :param group_id: filter by group_id
         :param event_start_time: start date for filtering by event_time
         :param event_stop_time: stop date for filtering by event_time
         :param max_results: max number of results to retrieve
         :return: list of events
         """
         params = {"page": page}
+        if sensor_id is not None:
+            params.update({"sensor_id": sensor_id})
         if requester_id is not None:
             params.update({"requester_id": requester_id})
-        if event_id is not None:
-            params.update({"event_id": event_id})
+        if group_id is not None:
+            params.update({"group_id": group_id})
         if event_start_time is not None:
             params.update({"event_start_time": event_start_time})
         if event_stop_time is not None:
@@ -128,8 +133,9 @@ class HiddenLayerClient(object):
     def get_alerts(
         self,
         page: int = 0,
+        sensor_id: str = None,
         requester_id: str = None,
-        alert_id: str = None,
+        group_id: str = None,
         event_start_time: str = None,
         event_stop_time: str = None,
         max_results: int = 1000,
@@ -137,18 +143,21 @@ class HiddenLayerClient(object):
         """Get list of events
 
         :param page: page number
+        :param sensor_id: filter by sensor_id
         :param requester_id: filter by requester_id
-        :param alert_id: filter by alert_id
+        :param group_id: filter by group_id
         :param event_start_time: start date for filtering by event_time
         :param event_stop_time: stop date for filtering by event_time
         :param max_results: max number of results to retrieve
         :return: list of events
         """
         params = {"page": page}
+        if sensor_id is not None:
+            params.update({"sensor_id": sensor_id})
         if requester_id is not None:
             params.update({"requester_id": requester_id})
-        if alert_id is not None:
-            params.update({"alert_id": alert_id})
+        if group_id is not None:
+            params.update({"group_id": group_id})
         if event_start_time is not None:
             params.update({"event_start_time": event_start_time})
         if event_stop_time is not None:

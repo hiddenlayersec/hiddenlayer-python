@@ -5,22 +5,22 @@ class HiddenLayerConfig(object):
     def __init__(self, env: os._Environ):
         self.env = env
 
-    def customer_id(self) -> str:
-        """Customer ID can be set via HL_CUSTOMER_ID environment variable
+    def api_host(self) -> str:
+        """HiddenLayer API host can be set via HL_API_HOST environment variable
 
-        :return: customer id
+        :return: api host
         """
-        return self.env.get("HL_CUSTOMER_ID", None)
+        return self.env.get("HL_API_HOST", None)
 
-    def api_url(self) -> str:
-        """Publisher URL can be set via HL_PUBLISHER_URL environment variable
+    def api_proto(self) -> str:
+        """HiddenLayer API proto be set via HL_API_PROTO environment variable
 
-        :return: publisher url
+        :return: api proto
         """
-        return self.env.get("HL_API_URL", None)
+        return self.env.get("HL_API_PROTO", None)
 
     def api_version(self) -> int:
-        """Publisher URL can be set via HL_PUBLISHER_URL environment variable
+        """HiddenLayer API version can be set via HL_API_VERSION environment variable
 
         :return: publisher url
         """
@@ -28,7 +28,7 @@ class HiddenLayerConfig(object):
         return int(version) if version else version
 
     def token(self) -> str:
-        """Publisher API token can be set via HL_API_TOKEN environment variable
+        """HiddenLayer API token can be set via HL_API_TOKEN environment variable
 
         :return: publisher api token
         """
