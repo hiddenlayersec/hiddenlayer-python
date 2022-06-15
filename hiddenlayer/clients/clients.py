@@ -22,8 +22,8 @@ class HiddenLayerClient(object):
         """
         self.version = version or config.api_version() or 1
         self.token = token or config.api_token()
-        self.api_host = api_host or config.api_host() or "https://api.hiddenlayer.com"
-        self.api_url = f"{self.api_host}/caml/api/v{self.version}"
+        self.api_host = api_host or config.api_host() or "api.hiddenlayer.com"
+        self.api_url = f"https://{self.api_host}/caml/api/v{self.version}"
 
         if self.token is None:
             raise AttributeError("API token must be set via HL_API_TOKEN environment variable or passed to the client.")
