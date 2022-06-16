@@ -91,6 +91,7 @@ class HiddenLayerClient(object):
         sensor_id: str = None,
         requester_id: str = None,
         group_id: str = None,
+        vector_exponent_sha256: str = None,
         vector_byte_size: int = None,
         vector_dtype: str = None,
         event_start_time: str = None,
@@ -103,6 +104,7 @@ class HiddenLayerClient(object):
         :param sensor_id: filter by sensor_id
         :param requester_id: filter by requester_id
         :param group_id: filter by group_id
+        :param vector_exponent_sha256: filter by vector exponent sha256
         :param vector_byte_size: filter by vector size in bytes
         :param vector_dtype: filter by vector data type
         :param event_start_time: start date for filtering by event_time
@@ -117,6 +119,8 @@ class HiddenLayerClient(object):
             params.update({"requester_id": requester_id})
         if group_id is not None:
             params.update({"group_id": group_id})
+        if vector_exponent_sha256 is not None:
+            params.update({"vector_exponent_sha256": vector_exponent_sha256})
         if vector_byte_size is not None:
             params.update({"vector_byte_size": vector_byte_size})
         if vector_dtype is not None:
@@ -168,6 +172,7 @@ class HiddenLayerClient(object):
         sensor_id: str = None,
         requester_id: str = None,
         group_id: str = None,
+        vector_exponent_sha256: str = None,
         vector_byte_size: int = None,
         vector_dtype: str = None,
         event_start_time: str = None,
@@ -180,6 +185,7 @@ class HiddenLayerClient(object):
         :param sensor_id: filter by sensor_id
         :param requester_id: filter by requester_id
         :param group_id: filter by group_id
+        :param vector_exponent_sha256: filter by vector exponent sha256
         :param vector_byte_size: filter by vector size in bytes
         :param vector_dtype: filter by vector data type
         :param event_start_time: start date for filtering by event_time
@@ -194,6 +200,8 @@ class HiddenLayerClient(object):
             params.update({"requester_id": requester_id})
         if group_id is not None:
             params.update({"group_id": group_id})
+        if vector_exponent_sha256 is not None:
+            params.update({"vector_exponent_sha256": vector_exponent_sha256})
         if vector_byte_size is not None:
             params.update({"vector_byte_size": vector_byte_size})
         if vector_dtype is not None:

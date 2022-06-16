@@ -23,6 +23,7 @@
     sensor_id: filter by sensor_id
     requester_id: filter by requester_id
     group_id: filter by group_id
+    vector_exponent_sha256: filter by the exponent sha256
     vector_byte_size: filter by vector size in bytes
     vector_dtype: filter by vector data type
     event_start_time: start date for filtering by event_time
