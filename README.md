@@ -16,6 +16,18 @@
 
     Client to interact with the HiddenLayer API
 
+##### Filters
+
+    These are the current filters that can be used when getting list of events and alerts
+
+    sensor_id: filter by sensor_id
+    requester_id: filter by requester_id
+    group_id: filter by group_id
+    vector_byte_size: filter by vector size in bytes
+    vector_dtype: filter by vector data type
+    event_start_time: start date for filtering by event_time
+    event_stop_time: stop date for filtering by event_time
+
 #### Create client
 ```python3
 from hiddenlayer.clients import HiddenLayerClient
@@ -69,6 +81,11 @@ client.get_events(max_results=50) # default 1000 max results
 ]
 ```
 
+#### Get event count
+```python3
+client.get_event_count()
+```
+
 #### Get alert
 
     Same functionality as retrieving an event
@@ -78,6 +95,10 @@ client.get_events(max_results=50) # default 1000 max results
 
     Same functionality as retrieving a list of events
 
+#### Get alert count
+```python3
+client.get_alert_count()
+```
 
 #### Get vector
 ```python3

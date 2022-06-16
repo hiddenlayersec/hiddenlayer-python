@@ -49,6 +49,30 @@ class HiddenLayerClient(object):
                 f"Failed to get endpoint health. Status code: {resp.status_code}, Detail: {resp.content}"
             )
 
+    def get_event_count(self) -> int:
+        resp = self.session.get(f"{self.api_url}/events")
+        if resp.ok:
+            data = resp.json()
+            count = data.get("total", None)
+            if count is not None:
+                return count
+            else:
+                raise ValueError("Error retrieving event count. Key 'total' not found in response.")
+        else:
+            raise requests.HTTPError(f"Failed to get event count. Status code: {resp.status_code}, Detail: {resp.content}")
+
+    def get_alert_count(self) -> int:
+        resp = self.session.get(f"{self.api_url}/alerts")
+        if resp.ok:
+            data = resp.json()
+            count = data.get("total", None)
+            if count is not None:
+                return count
+            else:
+                raise ValueError("Error retrieving event count. Key 'total' not found in response.")
+        else:
+            raise requests.HTTPError(f"Failed to get alert count. Status code: {resp.status_code}, Detail: {resp.content}")
+
     def get_event(self, event_id: str) -> dict:
         """get event by id
 
@@ -67,6 +91,8 @@ class HiddenLayerClient(object):
         sensor_id: str = None,
         requester_id: str = None,
         group_id: str = None,
+        vector_byte_size: int = None,
+        vector_dtype: str = None,
         event_start_time: str = None,
         event_stop_time: str = None,
         max_results: int = 1000,
@@ -77,6 +103,8 @@ class HiddenLayerClient(object):
         :param sensor_id: filter by sensor_id
         :param requester_id: filter by requester_id
         :param group_id: filter by group_id
+        :param vector_byte_size: filter by vector size in bytes
+        :param vector_dtype: filter by vector data type
         :param event_start_time: start date for filtering by event_time
         :param event_stop_time: stop date for filtering by event_time
         :param max_results: max number of results to retrieve
@@ -89,6 +117,10 @@ class HiddenLayerClient(object):
             params.update({"requester_id": requester_id})
         if group_id is not None:
             params.update({"group_id": group_id})
+        if vector_byte_size is not None:
+            params.update({"vector_byte_size": vector_byte_size})
+        if vector_dtype is not None:
+            params.update({"vector_dtype": vector_dtype})
         if event_start_time is not None:
             params.update({"event_start_time": event_start_time})
         if event_stop_time is not None:
@@ -136,6 +168,8 @@ class HiddenLayerClient(object):
         sensor_id: str = None,
         requester_id: str = None,
         group_id: str = None,
+        vector_byte_size: int = None,
+        vector_dtype: str = None,
         event_start_time: str = None,
         event_stop_time: str = None,
         max_results: int = 1000,
@@ -146,6 +180,8 @@ class HiddenLayerClient(object):
         :param sensor_id: filter by sensor_id
         :param requester_id: filter by requester_id
         :param group_id: filter by group_id
+        :param vector_byte_size: filter by vector size in bytes
+        :param vector_dtype: filter by vector data type
         :param event_start_time: start date for filtering by event_time
         :param event_stop_time: stop date for filtering by event_time
         :param max_results: max number of results to retrieve
@@ -158,6 +194,10 @@ class HiddenLayerClient(object):
             params.update({"requester_id": requester_id})
         if group_id is not None:
             params.update({"group_id": group_id})
+        if vector_byte_size is not None:
+            params.update({"vector_byte_size": vector_byte_size})
+        if vector_dtype is not None:
+            params.update({"vector_dtype": vector_dtype})
         if event_start_time is not None:
             params.update({"event_start_time": event_start_time})
         if event_stop_time is not None:
