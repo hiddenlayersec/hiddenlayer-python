@@ -59,7 +59,9 @@ class HiddenLayerClient(object):
             else:
                 raise ValueError("Error retrieving event count. Key 'total' not found in response.")
         else:
-            raise requests.HTTPError(f"Failed to get event count. Status code: {resp.status_code}, Detail: {resp.content}")
+            raise requests.HTTPError(
+                f"Failed to get event count. Status code: {resp.status_code}, Detail: {resp.content}"
+            )
 
     def get_alert_count(self) -> int:
         resp = self.session.get(f"{self.api_url}/alerts")
@@ -71,7 +73,9 @@ class HiddenLayerClient(object):
             else:
                 raise ValueError("Error retrieving event count. Key 'total' not found in response.")
         else:
-            raise requests.HTTPError(f"Failed to get alert count. Status code: {resp.status_code}, Detail: {resp.content}")
+            raise requests.HTTPError(
+                f"Failed to get alert count. Status code: {resp.status_code}, Detail: {resp.content}"
+            )
 
     def get_event(self, event_id: str) -> dict:
         """get event by id
