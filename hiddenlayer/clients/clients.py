@@ -94,8 +94,8 @@ class HiddenLayerClient(object):
         vector_exponent_sha256: str = None,
         vector_byte_size: int = None,
         vector_dtype: str = None,
-        event_start_time: str = None,
-        event_stop_time: str = None,
+        event_time_start: str = None,
+        event_time_stop: str = None,
         max_results: int = 1000,
     ) -> List[dict]:
         """Get list of events
@@ -107,8 +107,8 @@ class HiddenLayerClient(object):
         :param vector_exponent_sha256: filter by vector exponent sha256
         :param vector_byte_size: filter by vector size in bytes
         :param vector_dtype: filter by vector data type
-        :param event_start_time: start date for filtering by event_time
-        :param event_stop_time: stop date for filtering by event_time
+        :param event_time_start: start date for filtering by event_time
+        :param event_time_stop: stop date for filtering by event_time
         :param max_results: max number of results to retrieve
         :return: list of events
         """
@@ -125,34 +125,48 @@ class HiddenLayerClient(object):
             params.update({"vector_byte_size": vector_byte_size})
         if vector_dtype is not None:
             params.update({"vector_dtype": vector_dtype})
-        if event_start_time is not None:
-            params.update({"event_start_time": event_start_time})
-        if event_stop_time is not None:
-            params.update({"event_stop_time": event_stop_time})
+        if event_time_start is not None:
+            params.update({"event_time_start": event_time_start})
+        if event_time_stop is not None:
+            params.update({"event_time_stop": event_time_stop})
 
         url = f"{self.api_url}/events"
         results = []
-
-        while url:
-            resp = self.session.get(url, params=params)
-            if resp.ok:
-                content = resp.json()
-                results.extend(content["results"])
-
-                if content["next"]:
-                    url = content["next"]
-                else:
-                    url = None
-
-                if len(results) >= max_results:
-                    break
+        resp = self.session.get(url, params=params)
+        if resp.ok:
+            content = resp.json()
+            results.extend(content["results"])
+            if content["next"]:
+                url = content["next"]
             else:
-                raise requests.HTTPError(
-                    f"Failed to retrieve events page. "
-                    f"Status code: {resp.status_code}, Page: {page}, Detail: {resp.content}"
-                )
+                url = None
 
-        return results
+            if len(results) < max_results and url:
+                while url:
+                    resp = self.session.get(url)
+                    if resp.ok:
+                        content = resp.json()
+                        results.extend(content["results"])
+
+                        if content["next"]:
+                            url = content["next"]
+                        else:
+                            url = None
+
+                        if len(results) >= max_results:
+                            break
+                    else:
+                        raise requests.HTTPError(
+                            f"Failed to retrieve events page. "
+                            f"Status code: {resp.status_code}, Page: {page}, Detail: {resp.content}"
+                        )
+        else:
+            raise requests.HTTPError(
+                f"Failed to retrieve events page. "
+                f"Status code: {resp.status_code}, Page: {page}, Detail: {resp.content}"
+            )
+
+        return results[:max_results] if max_results else results
 
     def get_alert(self, alert_id: str) -> dict:
         """get alert by id
@@ -175,8 +189,8 @@ class HiddenLayerClient(object):
         vector_exponent_sha256: str = None,
         vector_byte_size: int = None,
         vector_dtype: str = None,
-        event_start_time: str = None,
-        event_stop_time: str = None,
+        event_time_start: str = None,
+        event_time_stop: str = None,
         max_results: int = 1000,
     ) -> List[dict]:
         """Get list of events
@@ -188,8 +202,8 @@ class HiddenLayerClient(object):
         :param vector_exponent_sha256: filter by vector exponent sha256
         :param vector_byte_size: filter by vector size in bytes
         :param vector_dtype: filter by vector data type
-        :param event_start_time: start date for filtering by event_time
-        :param event_stop_time: stop date for filtering by event_time
+        :param event_time_start: start date for filtering by event_time
+        :param event_time_stop: stop date for filtering by event_time
         :param max_results: max number of results to retrieve
         :return: list of events
         """
@@ -206,31 +220,48 @@ class HiddenLayerClient(object):
             params.update({"vector_byte_size": vector_byte_size})
         if vector_dtype is not None:
             params.update({"vector_dtype": vector_dtype})
-        if event_start_time is not None:
-            params.update({"event_start_time": event_start_time})
-        if event_stop_time is not None:
-            params.update({"event_stop_time": event_stop_time})
+        if event_time_start is not None:
+            params.update({"event_time_start": event_time_start})
+        if event_time_stop is not None:
+            params.update({"event_time_stop": event_time_stop})
 
         url = f"{self.api_url}/alerts"
         results = []
-
-        while url:
-            resp = self.session.get(url, params=params)
-            if resp.ok:
-                content = resp.json()
-                results.extend(content["results"])
-
-                if content["next"]:
-                    url = content["next"]
-                else:
-                    url = None
-
-                if len(results) >= max_results:
-                    break
+        resp = self.session.get(url, params=params)
+        if resp.ok:
+            content = resp.json()
+            results.extend(content["results"])
+            if content["next"]:
+                url = content["next"]
             else:
-                break
+                url = None
 
-        return results
+            if len(results) < max_results and url:
+                while url:
+                    resp = self.session.get(url)
+                    if resp.ok:
+                        content = resp.json()
+                        results.extend(content["results"])
+
+                        if content["next"]:
+                            url = content["next"]
+                        else:
+                            url = None
+
+                        if len(results) >= max_results:
+                            break
+                    else:
+                        raise requests.HTTPError(
+                            f"Failed to retrieve alerts page. "
+                            f"Status code: {resp.status_code}, Page: {page}, Detail: {resp.content}"
+                        )
+        else:
+            raise requests.HTTPError(
+                f"Failed to retrieve alerts page. "
+                f"Status code: {resp.status_code}, Page: {page}, Detail: {resp.content}"
+            )
+
+        return results[:max_results] if max_results else results
 
     def get_vector(self, vector_sha256: str) -> requests.Response:
         """get vector by sha256
