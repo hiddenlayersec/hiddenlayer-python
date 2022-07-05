@@ -95,9 +95,11 @@ class HiddenLayerClient(object):
         sensor_id: str = None,
         requester_id: str = None,
         group_id: str = None,
-        vector_exponent_sha256: str = None,
-        vector_byte_size: int = None,
-        vector_dtype: str = None,
+        input_layer_exponent_sha256: str = None,
+        input_layer_byte_size: int = None,
+        input_layer_dtype: str = None,
+        output_layer_byte_size: str = None,
+        output_layer_dtype: str = None,
         event_time_start: str = None,
         event_time_stop: str = None,
         max_results: int = 1000,
@@ -108,9 +110,11 @@ class HiddenLayerClient(object):
         :param sensor_id: filter by sensor_id
         :param requester_id: filter by requester_id
         :param group_id: filter by group_id
-        :param vector_exponent_sha256: filter by vector exponent sha256
-        :param vector_byte_size: filter by vector size in bytes
-        :param vector_dtype: filter by vector data type
+        :param input_layer_exponent_sha256: filter by input_layer exponent sha256
+        :param input_layer_byte_size: filter by input_layer size in bytes
+        :param input_layer_dtype: filter by input_layer data type
+        :param output_layer_byte_size: filter by output_layer size in bytes
+        :param output_layer_dtype: filter by output_layer dtype
         :param event_time_start: start date for filtering by event_time
         :param event_time_stop: stop date for filtering by event_time
         :param max_results: max number of results to retrieve
@@ -123,12 +127,16 @@ class HiddenLayerClient(object):
             params.update({"requester_id": requester_id})
         if group_id is not None:
             params.update({"group_id": group_id})
-        if vector_exponent_sha256 is not None:
-            params.update({"vector_exponent_sha256": vector_exponent_sha256})
-        if vector_byte_size is not None:
-            params.update({"vector_byte_size": vector_byte_size})
-        if vector_dtype is not None:
-            params.update({"vector_dtype": vector_dtype})
+        if input_layer_exponent_sha256 is not None:
+            params.update({"input_layer_exponent_sha256": input_layer_exponent_sha256})
+        if input_layer_byte_size is not None:
+            params.update({"input_layer_byte_size": input_layer_byte_size})
+        if input_layer_dtype is not None:
+            params.update({"input_layer_dtype": input_layer_dtype})
+        if output_layer_byte_size is not None:
+            params.update({"output_layer_byte_size": output_layer_byte_size})
+        if output_layer_dtype is not None:
+            params.update({"output_layer_dtype": output_layer_dtype})
         if event_time_start is not None:
             params.update({"event_time_start": event_time_start})
         if event_time_stop is not None:
@@ -190,9 +198,9 @@ class HiddenLayerClient(object):
         sensor_id: str = None,
         requester_id: str = None,
         group_id: str = None,
-        vector_exponent_sha256: str = None,
-        vector_byte_size: int = None,
-        vector_dtype: str = None,
+        category: str = None,
+        tactic: int = None,
+        risk: str = None,
         event_time_start: str = None,
         event_time_stop: str = None,
         max_results: int = 1000,
@@ -203,9 +211,9 @@ class HiddenLayerClient(object):
         :param sensor_id: filter by sensor_id
         :param requester_id: filter by requester_id
         :param group_id: filter by group_id
-        :param vector_exponent_sha256: filter by vector exponent sha256
-        :param vector_byte_size: filter by vector size in bytes
-        :param vector_dtype: filter by vector data type
+        :param category: filter by category of alerts
+        :param tactic: filter by mitre tactic for alerts
+        :param risk: filter by risk of alerts
         :param event_time_start: start date for filtering by event_time
         :param event_time_stop: stop date for filtering by event_time
         :param max_results: max number of results to retrieve
@@ -218,12 +226,12 @@ class HiddenLayerClient(object):
             params.update({"requester_id": requester_id})
         if group_id is not None:
             params.update({"group_id": group_id})
-        if vector_exponent_sha256 is not None:
-            params.update({"vector_exponent_sha256": vector_exponent_sha256})
-        if vector_byte_size is not None:
-            params.update({"vector_byte_size": vector_byte_size})
-        if vector_dtype is not None:
-            params.update({"vector_dtype": vector_dtype})
+        if category is not None:
+            params.update({"category": category})
+        if tactic is not None:
+            params.update({"tactic": tactic})
+        if risk is not None:
+            params.update({"risk": risk})
         if event_time_start is not None:
             params.update({"event_time_start": event_time_start})
         if event_time_stop is not None:
@@ -283,35 +291,38 @@ class HiddenLayerClient(object):
         self,
         model_id: str,
         requester_id: str,
-        vectors: Union[List[List[Union[int, float]]], np.ndarray],
-        predictions: Union[List[Union[int, float]], np.ndarray],
-        compress: bool = False,
+        input_layer: Union[List[List[Union[float]]], np.ndarray],
+        output_layer: Union[List[List[Union[float]]], np.ndarray],
+        predictions: Union[None, List[Union[float]], np.ndarray] = None,
+        compress: bool = True,
     ):
-        if isinstance(vectors, list):
-            if len(vectors) != len(predictions):
-                raise ValueError(
-                    f"Length of vectors is not equal to length of predictions. "
-                    f"Vectors: {len(vectors)}, Predictions: {len(predictions)}"
-                )
-        elif isinstance(vectors, np.ndarray):
-            if vectors.shape[0] != len(predictions):
-                raise ValueError(
-                    f"Length of vectors is not equal to length of predictions. "
-                    f"Vectors: {vectors.shape[0]}, Predictions: {len(predictions)}"
-                )
+        if len(input_layer) != len(output_layer):
+            raise ValueError(F"length of input_layer is not equal to length of output_layer. "
+                             F"input_layer: {len(input_layer)}, output_layer: {len(output_layer)}")
 
-        buffer = BytesIO()
-        np.save(buffer, vectors, allow_pickle=True)
+        input_layer_buffer = BytesIO()
+        np.save(input_layer_buffer, input_layer, allow_pickle=True)
+
+        output_layer_buffer = BytesIO()
+        np.save(output_layer_buffer, output_layer, allow_pickle=True)
 
         if compress:
-            encoded_vectors = base64.b64encode(gzip.compress(buffer.getvalue())).decode()
+            input_layer_enc = base64.b64encode(gzip.compress(input_layer_buffer.getvalue())).decode()
+            output_layer_enc = base64.b64encode(gzip.compress(output_layer_buffer.getvalue())).decode()
         else:
-            encoded_vectors = base64.b64encode(buffer.getvalue()).decode()
+            input_layer_enc = base64.b64encode(input_layer_buffer.getvalue()).decode()
+            output_layer_enc = base64.b64encode(output_layer_buffer.getvalue()).decode()
+
+        if isinstance(predictions, np.ndarray):
+            predictions = predictions.tolist()
+        elif predictions is None:
+            predictions = []
 
         payload = {
             "model_id": model_id,
             "requester_id": requester_id,
-            "vectors": encoded_vectors,
+            "input_layer": input_layer_enc,
+            "output_layer": output_layer_enc,
             "predictions": predictions,
         }
 

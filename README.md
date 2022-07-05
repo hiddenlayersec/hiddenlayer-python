@@ -16,19 +16,6 @@
 
     Client to interact with the HiddenLayer API
 
-##### Filters
-
-    These are the current filters that can be used when getting list of events and alerts
-
-    sensor_id: filter by sensor_id
-    requester_id: filter by requester_id
-    group_id: filter by group_id
-    vector_exponent_sha256: filter by the exponent sha256
-    vector_byte_size: filter by vector size in bytes
-    vector_dtype: filter by vector data type
-    event_start_time: start date for filtering by event_time
-    event_stop_time: stop date for filtering by event_time
-
 #### Create client
 ```python3
 from hiddenlayer.clients import HiddenLayerClient
@@ -57,6 +44,20 @@ client.get_event("be1b191d-99a3-4d38-915a-e2d8361184ef")
 ```
 
 #### Get list of events
+
+These are the current filters that can be used when getting list of events
+
+    sensor_id: filter by sensor_id
+    requester_id: filter by requester_id
+    group_id: filter by group_id
+    input_layer_exponent_sha256: filter by the input_layer exponent sha256
+    input_layer_byte_size: filter by input_layer size in bytes
+    input_layer_dtype: filter by input_layer data type
+    output_layer_byte_size: filter by input_layer size in bytes
+    output_layer_dtype: filter by input_layer data type
+    event_start_time: start date for filtering by event_time
+    event_stop_time: stop date for filtering by event_time
+
 ```python3
 from hiddenlayer.clients import HiddenLayerClient
 
@@ -95,6 +96,18 @@ client.get_event_count()
 #### Get list of alerts
 
     Same functionality as retrieving a list of events
+
+These are the current filters that can be used when getting list of events and alerts
+
+    sensor_id: filter by sensor_id
+    requester_id: filter by requester_id
+    group_id: filter by group_id
+    category: category of alert
+    tactic: mitre tactic of alert
+    risk: risk of alert
+    event_start_time: start date for filtering by event_time
+    event_stop_time: stop date for filtering by event_time
+
 
 #### Get alert count
 ```python3
@@ -139,15 +152,12 @@ from hiddenlayer.clients import HiddenLayerClient
 client = HiddenLayerClient(token="<API-TOKEN>")
 
 x, y = make_classification(2) # x is the vectors
-predictions = [0.7731156403121537, 0.3811970489679117]
+predictions = [0.7731156403121537, 0.3811970489679117] # OPTIONAL
 
-client.submit("test_model_v1", "requester_abc123", x, predictions)
+client.submit("test_model_v1", "requester_abc123", x, y, predictions)
 {'sensor_id': 'test_model_v1',
  'event_time': '2022-06-15T03:07:50.688627',
  'customer_id': '977399c5-24b9-4145-b165-a17b700cdafe',
  'event_id': '5119bcc9-18de-4115-a8e2-528f6b904108',
- 'requester_id': 'requester_abc123',
- 'fwd_url': 'HiddenLayer-API',
- 'fwd_elapsed': -1,
- 'fwd_status_code': 200}
+ 'requester_id': 'requester_abc123'}
 ```
